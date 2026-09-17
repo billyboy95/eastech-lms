@@ -9,7 +9,7 @@ jobs:
   check:
     runs-on: ubuntu-latest
     env:
-      DATABASE_URL: file:./prisma/dev.db
+      DATABASE_URL: file:./dev.db
       DEMO_AUTH_SECRET: ci-demo-secret-not-for-production
     steps:
       - uses: actions/checkout@v4

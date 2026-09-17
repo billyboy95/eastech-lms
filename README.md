@@ -92,7 +92,7 @@ GitHub Actions runs the same sequence on every pull request.
 
 `.env.example` documents:
 
-- `DATABASE_URL` — default `file:./prisma/dev.db` (the db file is gitignored)
+- `DATABASE_URL` — default `file:./dev.db` next to the Prisma schema (the db file is gitignored)
 - `DEMO_AUTH_SECRET` — optional locally (a non-production default is used). **Required in production**, minimum 16 characters. Never commit a real secret.
 
 ## Deploy notes
