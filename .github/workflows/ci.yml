@@ -12,8 +12,8 @@ jobs:
       DATABASE_URL: file:./dev.db
       DEMO_AUTH_SECRET: ci-demo-secret-not-for-production
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: npm
