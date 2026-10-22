@@ -1,0 +1,94 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  STUDENT
+  EDUCATOR
+}
+
+enum CampusTrack {
+  SCHOOL
+  ARTISAN_COLLEGE
+  VARSITY
+  FOOD_COURT
+}
+
+enum EnrollmentStatus {
+  ACTIVE
+  COMPLETED
+}
+
+model User {
+  id             String           @id @default(cuid())
+  email          String           @unique
+  displayName    String
+  role           Role
+  campusTrack    CampusTrack
+  bio            String
+  createdAt      DateTime         @default(now())
+  taughtCourses  Course[]         @relation("CourseEducator")
+  enrollments    Enrollment[]
+  lessonProgress LessonProgress[]
+}
+
+model Course {
+  id          String       @id @default(cuid())
+  slug        String       @unique
+  title       String
+  summary     String
+  description String
+  campusTrack CampusTrack
+  published   Boolean      @default(true)
+  educatorId  String
+  educator    User         @relation("CourseEducator", fields: [educatorId], references: [id])
+  lessons     Lesson[]
+  enrollments Enrollment[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Lesson {
+  id          String           @id @default(cuid())
+  slug        String
+  title       String
+  summary     String
+  content     String
+  order       Int
+  durationMin Int
+  courseId    String
+  course      Course           @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  progress    LessonProgress[]
+  createdAt   DateTime         @default(now())
+
+  @@unique([courseId, slug])
+  @@index([courseId, order])
+}
+
+model Enrollment {
+  id         String            @id @default(cuid())
+  userId     String
+  courseId   String
+  status     EnrollmentStatus  @default(ACTIVE)
+  enrolledAt DateTime          @default(now())
+  user       User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course     Course            @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+}
+
+model LessonProgress {
+  id          String   @id @default(cuid())
+  userId      String
+  lessonId    String
+  completedAt DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson      Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+}
